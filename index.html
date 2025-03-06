@@ -3,148 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aéroport du Grand Canal</title>
+    <title>Aéronoe - Accueil</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background: url('aéroport.jpg') no-repeat center center fixed;
-            background-size: cover;
-            color: white;
-        }
-        header {
-            padding: 0; /* Retirer le padding car plus nécessaire */
-        }
-        .banner {
-            width: 100%;
-            height: 200px;
-            background: url('bannière.webp') no-repeat center center/cover;
-            position: relative; /* Pour positionner le texte dans la bannière */
-        }
-        .banner-text {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 36px;
-            color: white;
-            font-weight: bold;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Ombre pour améliorer la lisibilité */
-            text-align: center;
-        }
-        nav {
             display: flex;
+            flex-direction: column;
+            align-items: center;
             justify-content: center;
-            background: #333;
-            padding: 10px 0;
-        }
-        nav a {
-            color: white;
-            text-decoration: none;
-            padding: 10px 20px;
-        }
-        nav a:hover {
-            background: #555;
-        }
-        .container {
-            width: 80%;
-            margin: 20px auto;
-            background: white;
-            padding: 20px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-        }
-        h2 {
+            height: 100vh;
+            background: url('index.webp') no-repeat center center fixed;
+            background-size: cover;
             text-align: center;
-            color: #333;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: left;
-            color: black;
-        }
-        th {
-            background-color: #4a90e2;
-            color: black;
-        }
-        .contact {
-            text-align: center;
-            margin-top: 30px;
-        }
-        .play-button {
-            position: fixed;
-            bottom: 10px;
-            right: 10px;
-            background: rgba(255, 255, 255, 0.1); 
             color: white;
-            font-size: 0.9em;
-            text-decoration: none;
-            padding: 10px 15px;
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            border-radius: 5px;
-            transition: background 0.3s, border-color 0.3s;
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
         }
-        .play-button:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: white;
+
+        h1 {
+            font-size: 48px;
+            font-weight: bold;
+            text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.7);
+            opacity: 0;
+            transform: translateY(-20px);
+            animation: fadeIn 1.5s ease-out forwards;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 15px 40px;
+            font-size: 22px;
+            font-weight: bold;
+            color: white;
+            background: linear-gradient(90deg, #007BFF, #0056b3);
+            text-decoration: none;
+            border-radius: 30px;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 0 15px rgba(0, 123, 255, 0.7);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 1.5s ease-out 0.5s forwards;
+        }
+
+        .button:hover {
+            background: linear-gradient(90deg, #0056b3, #003d80);
+            box-shadow: 0 0 25px rgba(0, 123, 255, 1);
+            transform: scale(1.05);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>
 <body>
-    <header>
-        <!-- Aucun texte ici, car il est maintenant dans la bannière -->
-    </header>
-    <div class="banner">
-        <div class="banner-text">Aéroport du Grand Canal</div>
-    </div>
-    <nav>
-        <nav>
-            <a href="index.html">Accueil</a>
-            <a href="reservation.html">Réservations cargaison</a>
-            <a href="reservation-vol.html">Réservations vols</a>
-            <a href="horaires.html">Horaires</a>
-            <a href="mes-reservations.html">mes réservations</a>
-        </nav>
-        <a href="#contact">Contact</a>
-    </nav>
-    <div class="container">
-        <h2>Tarifs Transport Personnes</h2>
-        <table>
-            <tr><th>Classe</th><th>Prix</th></tr>
-            <tr><td>Classe Simple</td><td>2d</td></tr>
-            <tr><td>Classe Moyen</td><td>5d</td></tr>
-            <tr><td>Classe Business</td><td>10d + 15e</td></tr>
-            <tr><td>Classe Entreprise</td><td>14d / p</td></tr>
-            <tr><td>Classe Royal</td><td>10 lingot de neterithe / 65 diamant</td></tr>
-            <tr><td>Ticket métro + avions</td><td>10d</td></tr>
-            <tr><td>Abonnement Classe Moyen</td><td>120d/m</td></tr>
-            <tr><td>Jet Privé</td><td>100 - 800d / mo</td></tr>
-        </table>
-    </div>
-    <div class="container">
-        <h2>Tarifs Transport Marchandises</h2>
-        <table>
-            <tr><th>Slot</th><th>Prix</th></tr>
-            <tr><td>1 slot</td><td>2d</td></tr>
-            <tr><td>+1 slot</td><td>3d</td></tr>
-            <tr><td>10 slot</td><td>24d</td></tr>
-            <tr><td>50 slot</td><td>100d</td></tr>
-            <tr><td>100 slot</td><td>150d / 15 lingot de netherit</td></tr>
-            <tr><td>Item simple</td><td>5d</td></tr>
-            <tr><td>500 slot</td><td>90bloc de diamant / 9 bloc de netherite</td></tr>
-        </table>
-    </div>
-    <div class="contact" id="contact">
-        <h2>Service Client</h2>
-        <p>Contact : <a href="mailto:enoe.pro@gmail.com">enoe.pro@gmail.com</a></p>
-    </div>
-  <a href="login.html" target="_blank" class="play-button">S'inscrir</a>
+
+    <h1>Bienvenue sur le site d'Aéronoe</h1>
+    <a href="ind.html" class="button">Continuer</a>
+
 </body>
 </html>
