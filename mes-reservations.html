@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mes Réservations - Aéroport du Grand Canal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: url('aéroport.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+        }
+
+        .banner {
+            width: 100%;
+            height: 200px;
+            background: url('bannière.webp') no-repeat center center/cover;
+            position: relative;
+        }
+
+        .banner-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 36px;
+            color: white;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        header {
+            background-color: #4a90e2;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 24px;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            background: #333;
+            padding: 10px 0;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+        }
+
+        nav a:hover {
+            background: #555;
+        }
+
+        .container {
+            width: 50%;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        .reservation {
+            background: #000000;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .reservation button {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .reservation button:hover {
+            background: #c0392b;
+        }
+
+        .play-button {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 0.9em;
+            text-decoration: none;
+            padding: 10px 15px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 5px;
+            transition: background 0.3s, border-color 0.3s;
+        }
+
+        .play-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: white;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <!-- Aucun texte ici, car il est maintenant dans la bannière -->
+    </header>
+    <div class="banner">
+        <div class="banner-text">Mes Réservations - Aéroport du Grand Canal</div>
+    </div>
+
+    <nav>
+        <a href="index.html">Accueil</a>
+        <a href="reservation.html">Réservations cargaison</a>
+        <a href="reservation-vol.html">Réservations vols</a>
+        <a href="horaires.html">Horaires</a>
+        <a href="mes-reservations.html">mes réservations</a>
+    </nav>
+
+    <div class="container">
+        <h2>Vos réservations</h2>
+        <div id="login-message" style="text-align: center; color: red;"></div>
+        <div id="reservations-list"></div>
+        <div id="login-link" style="text-align: center; margin-top: 20px;">
+            <a href="login.html" class="play-button">Connectez-vous pour voir vos réservations</a>
+        </div>
+    </div>
+
+    <script>
+        function checkLogin() {
+            let currentUser = localStorage.getItem("currentUser");
+
+            if (currentUser) {
+                // Si l'utilisateur est connecté, on affiche ses réservations
+                document.getElementById("login-message").innerText = '';
+                document.getElementById("login-link").style.display = "none";
+                displayReservations(currentUser);
+            } else {
+                // Si l'utilisateur n'est pas connecté, on affiche un message
+                document.getElementById("reservations-list").innerHTML = '';
+                document.getElementById("login-message").innerText = 'Vous devez être connecté pour voir vos réservations.';
+                document.getElementById("login-link").style.display = "block";
+            }
+        }
+
+        // Fonction pour afficher les réservations
+        function displayReservations(currentUser) {
+            let reservations = JSON.parse(localStorage.getItem('reservations')) || [];
+            let userReservations = reservations.filter(reservation => reservation.nom === currentUser);
+
+            if (userReservations.length === 0) {
+                document.getElementById("reservations-list").innerHTML = '<p>Aucune réservation trouvée.</p>';
+                return;
+            }
+
+            let reservationsHTML = userReservations.map((reservation, index) => {
+                return `
+                            <div class="reservation">
+                                <div>
+                                    <strong>Nom:</strong> ${reservation.nom}<br>
+                                    <strong>Classe:</strong> ${reservation.classe}<br>
+                                    <strong>Date de départ:</strong> ${reservation.date}
+                                </div>
+                                <button onclick="cancelReservation(${index})">Annuler</button>
+                            </div>
+                        `;
+            }).join('');
+
+            document.getElementById("reservations-list").innerHTML = reservationsHTML;
+        }
+
+        // Fonction pour annuler une réservation
+        function cancelReservation(index) {
+            let reservations = JSON.parse(localStorage.getItem('reservations')) || [];
+            reservations.splice(index, 1); // Supprimer la réservation
+            localStorage.setItem('reservations', JSON.stringify(reservations));
+            displayReservations(localStorage.getItem("currentUser")); // Mettre à jour la liste des réservations
+        }
+
+        window.onload = checkLogin;  // Appelle la fonction au chargement de la page
+    </script>
+</body>
+</html>

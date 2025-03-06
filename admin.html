@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration - Aéroport du Grand Canal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f4f4f4;
+        }
+        header {
+            background-color: #4a90e2;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 24px;
+        }
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        button {
+            background: #4a90e2;
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 5px 10px;
+            margin: 5px;
+        }
+        button:hover {
+            background: #357abd;
+        }
+        #admin-form {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        Admin - Gérer les Réservations et Comptes
+    </header>
+    <nav>
+        <a href="index.html">Accueil</a>
+        <a href="reservation.html">Réservations cargaison</a>
+        <a href="reservation-vol.html">Réservations vols</a>
+        <a href="horaires.html">Horaires</a>
+        <a href="mes-reservations.html">mes réservations</a>
+    </nav>
+    <div class="container" id="admin-container">
+        <div id="admin-form">
+            <h2>Accédez à la zone Admin</h2>
+            <label for="password">Mot de passe :</label>
+            <input type="password" id="password" required>
+            <button onclick="checkPassword()">Se connecter</button>
+            <p id="error-message" style="color: red;"></p>
+        </div>
+
+        <div id="admin-content" style="display: none;">
+            <h2>Réservations</h2>
+            <table id="reservations-table">
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Classe</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Les lignes de réservation seront insérées ici -->
+                </tbody>
+            </table>
+
+            <h2>Comptes Utilisateurs</h2>
+            <table id="users-table">
+                <thead>
+                    <tr>
+                        <th>Nom d'utilisateur</th>
+                        <th>Email</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Les lignes de comptes utilisateurs seront insérées ici -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const adminPassword = "aeronoe-mc2";
+
+        // Fonction de vérification du mot de passe
+        function checkPassword() {
+            const password = document.getElementById("password").value;
+            if (password === adminPassword) {
+                document.getElementById("admin-form").style.display = "none";
+                document.getElementById("admin-content").style.display = "block";
+                loadReservations();
+                loadUsers();
+            } else {
+                document.getElementById("error-message").innerText = "Mot de passe incorrect.";
+            }
+        }
+
+        // Charger les réservations depuis localStorage
+        function loadReservations() {
+            const reservations = JSON.parse(localStorage.getItem('reservations')) || [];
+            const reservationsTable = document.getElementById("reservations-table").getElementsByTagName('tbody')[0];
+            reservationsTable.innerHTML = '';
+
+            reservations.forEach((reservation, index) => {
+                const row = reservationsTable.insertRow();
+                row.innerHTML = `
+                        <td>${reservation.nom}</td>
+                        <td>${reservation.classe}</td>
+                        <td>${reservation.date}</td>
+                        <td>
+                            <button onclick="editReservation(${index})">Modifier</button>
+                            <button onclick="deleteReservation(${index})">Supprimer</button>
+                        </td>
+                    `;
+            });
+        }
+
+        // Charger les utilisateurs (comptes) depuis localStorage
+        function loadUsers() {
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const usersTable = document.getElementById("users-table").getElementsByTagName('tbody')[0];
+            usersTable.innerHTML = '';
+
+            users.forEach((user, index) => {
+                const row = usersTable.insertRow();
+                row.innerHTML = `
+                        <td>${user.username}</td>
+                        <td>${user.email}</td>
+                        <td>
+                            <button onclick="editUser(${index})">Modifier</button>
+                            <button onclick="deleteUser(${index})">Supprimer</button>
+                        </td>
+                    `;
+            });
+        }
+
+        // Fonction de modification de la réservation
+        function editReservation(index) {
+            const reservations = JSON.parse(localStorage.getItem('reservations')) || [];
+            const reservation = reservations[index];
+            const newNom = prompt("Modifier le nom de la réservation:", reservation.nom);
+            const newClasse = prompt("Modifier la classe:", reservation.classe);
+            const newDate = prompt("Modifier la date:", reservation.date);
+
+            if (newNom && newClasse && newDate) {
+                reservation.nom = newNom;
+                reservation.classe = newClasse;
+                reservation.date = newDate;
+                localStorage.setItem('reservations', JSON.stringify(reservations));
+                loadReservations();
+            }
+        }
+
+        // Fonction de suppression de la réservation
+        function deleteReservation(index) {
+            const reservations = JSON.parse(localStorage.getItem('reservations')) || [];
+            reservations.splice(index, 1);
+            localStorage.setItem('reservations', JSON.stringify(reservations));
+            loadReservations();
+        }
+
+        // Fonction de modification du compte utilisateur
+        function editUser(index) {
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const user = users[index];
+            const newUsername = prompt("Modifier le nom d'utilisateur:", user.username);
+            const newEmail = prompt("Modifier l'email:", user.email);
+
+            if (newUsername && newEmail) {
+                user.username = newUsername;
+                user.email = newEmail;
+                localStorage.setItem('users', JSON.stringify(users));
+                loadUsers();
+            }
+        }
+
+        // Fonction de suppression du compte utilisateur
+        function deleteUser(index) {
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            users.splice(index, 1);
+            localStorage.setItem('users', JSON.stringify(users));
+            loadUsers();
+        }
+    </script>
+
+</body>
+</html>

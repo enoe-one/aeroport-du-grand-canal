@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Réservation - Aéroport du Grand Canal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: url('aéroport.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+        }
+
+        header {
+            padding: 0;
+        }
+
+        .banner {
+            width: 100%;
+            height: 200px;
+            background: url('bannière.webp') no-repeat center center/cover;
+            position: relative;
+        }
+
+        .banner-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 36px;
+            color: white;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            background: #333;
+            padding: 10px 0;
+        }
+
+            nav a {
+                color: white;
+                text-decoration: none;
+                padding: 10px 20px;
+            }
+
+                nav a:hover {
+                    background: #555;
+                }
+
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 20px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            padding: 10px;
+            width: 100%;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+            button:hover {
+                background-color: #357abd;
+            }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #4a90e2;
+            color: white;
+        }
+
+        .error-message {
+            color: red;
+            text-align: center;
+        }
+
+        .auth-buttons {
+            text-align: center;
+        }
+
+        .play-button {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 0.9em;
+            text-decoration: none;
+            padding: 10px 15px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 5px;
+            transition: background 0.3s, border-color 0.3s;
+        }
+
+            .play-button:hover {
+                background: rgba(255, 255, 255, 0.2);
+                border-color: white;
+            }
+    </style>
+</head>
+<body>
+
+    <!-- Ajout de la bannière -->
+    <div class="banner">
+        <div class="banner-text">Aéroport du Grand Canal</div>
+    </div>
+
+    <nav>
+        <a href="index.html">Accueil</a>
+        <a href="reservation.html">Réservations cargaison</a>
+        <a href="reservation-vol.html">Réservations vols</a>
+        <a href="horaires.html">Horaires</a>
+        <a href="mes-reservations.html">mes réservations</a>
+    </nav>
+
+    <div class="container">
+        <h2>Réserver des slots</h2>
+
+        <div id="auth-buttons" class="auth-buttons">
+            <!-- Affichage des boutons de connexion/déconnexion -->
+        </div>
+
+        <div id="reservation-form" style="display: none;">
+            <label for="name">Nom de la réservation:</label>
+            <input type="text" id="name" placeholder="Entrez votre nom" required>
+
+            <label for="slots">Nombre de slots:</label>
+            <input type="number" id="slots" placeholder="Nombre de slots" min="1" required>
+
+            <label for="date">Date:</label>
+            <input type="date" id="date" required>
+
+            <label>
+                <input type="checkbox" id="non-visible">
+                Ne pas afficher dans les horaires (10 jours)
+            </label>
+
+            <button onclick="makeReservation()">Réserver</button>
+        </div>
+
+        <p id="error-message" class="error-message"></p>
+
+        <div id="reservation-info" style="display: none;">
+            <p>Réservation effectuée avec succès!</p>
+            <button onclick="window.location.href='mes-reservations.html'">Voir Mes Réservations</button>
+        </div>
+
+        <h3>Prix des Slots et Marchandises</h3>
+        <table>
+            <tr><th>Slot</th><th>Prix</th></tr>
+            <tr><td>1 slot</td><td>2d</td></tr>
+            <tr><td>+1 slot</td><td>3d</td></tr>
+            <tr><td>10 slot</td><td>24d</td></tr>
+            <tr><td>50 slot</td><td>100d</td></tr>
+            <tr><td>100 slot</td><td>150d / 15 lingot de netherite</td></tr>
+            <tr><td>Item simple</td><td>5d</td></tr>
+            <tr><td>500 slot</td><td>90 bloc de diamant / 9 bloc de netherite</td></tr>
+        </table>
+    </div>
+
+    <a href="login.html" target="_blank" class="play-button">S'inscrire</a>
+
+    <script>
+        const prices = {
+            "slot1": 50,
+            "slot2": 100,
+            "slot3": 150
+        };
+
+        function checkAuthButtons() {
+            let currentUser = localStorage.getItem("currentUser");
+            let authButtons = document.getElementById("auth-buttons");
+            if (currentUser) {
+                authButtons.innerHTML = '<button onclick="logout()">Déconnexion</button>';
+                document.getElementById("reservation-form").style.display = "block"; // Montrer le formulaire de réservation
+            } else {
+                authButtons.innerHTML = '<button onclick="window.location.href=\'login.html\'">Connexion</button>' +
+                    '<button onclick="window.location.href=\'register.html\'">S\'inscrire</button>';
+                document.getElementById("error-message").innerText = "Vous devez être connecté pour effectuer une réservation.";
+            }
+        }
+
+        function makeReservation() {
+            const name = document.getElementById("name").value;
+            const slots = parseInt(document.getElementById("slots").value);
+            const date = document.getElementById("date").value;
+            const nonVisible = document.getElementById("non-visible").checked;
+
+            if (!name || !slots || !date) {
+                document.getElementById("error-message").innerText = "Tous les champs sont obligatoires.";
+                return;
+            }
+
+            const currentUser = localStorage.getItem("currentUser");
+            if (!currentUser) {
+                document.getElementById("error-message").innerText = "Vous devez être connecté pour effectuer une réservation.";
+                return;
+            }
+
+            const reservation = {
+                name: name,
+                slots: slots,
+                date: date,
+                nonVisible: nonVisible,
+                username: currentUser,
+                price: slots * prices.slot1 // Exemple de calcul du prix (ici "slot1")
+            };
+
+            // Ajouter la réservation dans les réservations
+            const reservations = JSON.parse(localStorage.getItem("reservations")) || [];
+            reservations.push(reservation);
+            localStorage.setItem("reservations", JSON.stringify(reservations));
+
+            // Rediriger ou afficher un message de succès
+            document.getElementById("reservation-form").style.display = "none";
+            document.getElementById("reservation-info").style.display = "block";
+
+            // Ajouter à "Mes Réservations" et admin
+            updateAdminAndUserReservations(reservation);
+        }
+
+        function updateAdminAndUserReservations(reservation) {
+            // Ajouter la réservation à "Mes Réservations" et dans l'admin
+            const userReservations = JSON.parse(localStorage.getItem("userReservations")) || {};
+            const adminReservations = JSON.parse(localStorage.getItem("adminReservations")) || [];
+
+            if (!userReservations[reservation.username]) {
+                userReservations[reservation.username] = [];
+            }
+            userReservations[reservation.username].push(reservation);
+
+            adminReservations.push(reservation);
+
+            localStorage.setItem("userReservations", JSON.stringify(userReservations));
+            localStorage.setItem("adminReservations", JSON.stringify(adminReservations));
+        }
+
+        function logout() {
+            localStorage.removeItem("currentUser");
+            alert("Déconnexion réussie");
+            window.location.reload();
+        }
+
+        window.onload = checkAuthButtons;
+    </script>
+</body>
+
+</html>
