@@ -4,7 +4,125 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Horaires - Aéroport du Grand Canal</title>
+<<<<<<< HEAD
  <link rel="stylesheet" href="C:\Users\Emile GLINCHE\Desktop\site\aeropot\styles.css">
+=======
+    <style>
+        /* Styles existants */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: url('aéroport.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+        }
+
+        .banner {
+            width: 100%;
+            height: 200px;
+            background: url('bannière.webp') no-repeat center center/cover;
+            position: relative;
+        }
+
+        .banner-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 36px;
+            color: white;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        header {
+            background-color: rgba(74, 144, 226, 0.8);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 24px;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            background: rgba(51, 51, 51, 0.8);
+            padding: 10px 0;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+        }
+
+        nav a:hover {
+            background: rgba(85, 85, 85, 0.8);
+        }
+
+        .container {
+            width: 70%;
+            margin: 20px auto;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            color: black;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+            color: black;
+        }
+
+        th {
+            background-color: #4a90e2;
+            color: white;
+        }
+
+        .no-flights {
+            text-align: center;
+            font-size: 18px;
+            color: #333;
+            margin-top: 20px;
+        }
+
+        .play-button {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 0.9em;
+            text-decoration: none;
+            padding: 10px 15px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 5px;
+            transition: background 0.3s, border-color 0.3s;
+        }
+
+        .play-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: white;
+        }
+    </style>
+>>>>>>> 0604733b606805c79383680fda234edd08b35e6c
 </head>
 <body>
     <header>
@@ -50,17 +168,17 @@
                 noFlightsMessage.style.display = "none";
                 reservations.forEach(res => {
                     let row = `<tr>
-                                                <td>${res.nom}</td>
-                                                <td>${res.destination}</td>
-                                                <td>${res.depart}</td>
-                                                <td>${res.arrivee}</td>
-                                                <td>${res.classe}</td>
-                                            </tr>`;
+                        <td>${res.nom}</td>
+                        <td>${res.destination}</td>
+                        <td>${res.depart}</td>
+                        <td>${res.arrivee}</td>
+                        <td>${res.classe}</td>
+                    </tr>`;
                     tableBody.innerHTML += row;
                 });
             }
         });
     </script>
-    <a href="login.html" target="_blank" class="play-button">S'inscrir</a>
+    <a href="login.html" target="_blank" class="play-button">S'inscrire</a>
 </body>
 </html>
