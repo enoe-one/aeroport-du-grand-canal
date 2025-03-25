@@ -136,16 +136,20 @@
                 nonVisible
             };
 
+            // Récupérer les réservations de l'utilisateur
             let userReservations = JSON.parse(localStorage.getItem("userReservations")) || {};
             if (!userReservations[currentUser]) {
                 userReservations[currentUser] = [];
             }
 
+            // Ajouter la réservation à l'utilisateur
             userReservations[currentUser].push(reservation);
 
+            // Récupérer les réservations des administrateurs
             let adminReservations = JSON.parse(localStorage.getItem("adminReservations")) || [];
             adminReservations.push(reservation);
 
+            // Sauvegarder les réservations mises à jour
             localStorage.setItem("userReservations", JSON.stringify(userReservations));
             localStorage.setItem("adminReservations", JSON.stringify(adminReservations));
 
