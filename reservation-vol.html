@@ -7,8 +7,6 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
-    <!-- Ajout de la bannière -->
     <div class="banner">
         <div class="banner-text">Aéroport du Grand Canal</div>
     </div>
@@ -18,15 +16,12 @@
         <a href="reservation.html">Réservations cargaison</a>
         <a href="reservation-vol.html">Réservations vols</a>
         <a href="horaires.html">Horaires</a>
-        <a href="mes-reservations.html">mes réservations</a>
+        <a href="mes-reservations.html">Mes réservations</a>
     </nav>
 
     <div class="container">
         <h2>Réserver des slots</h2>
-
-        <div id="auth-buttons" class="auth-buttons">
-            <!-- Affichage des boutons de connexion/déconnexion -->
-        </div>
+        <div id="auth-buttons" class="auth-buttons"></div>
 
         <div id="reservation-form" style="display: none;">
             <label for="name">Nom de la réservation:</label>
@@ -35,24 +30,22 @@
             <label for="slots">Nombre de slots:</label>
             <input type="number" id="slots" placeholder="Nombre de slots" min="1" required>
 
-            <label for="class">Classe de réservation:</label>
-            <select id="class" required>
-                <option value="Classe Simple">simple</option>
-                <option value="Classe Moyen">moyen</option>
-                <option value="classe Business">Affaires</option>
-                <option value="Classe Entreprise">entreprise (plusieur personne)</option>
-                <option value="Classe Royal">royal</option>
-                <option value="Abonnement Classe Moyen>abonnement (contacter l'admin pour changer la classe)'</option>
-                <option value="Jet Privé">jets privé / ans</option>
-
+            <label for="reservation-class">Classe de réservation:</label>
+            <select id="reservation-class" required>
+                <option value="Classe Simple">Simple</option>
+                <option value="Classe Moyen">Moyen</option>
+                <option value="Classe Business">Affaires</option>
+                <option value="Classe Entreprise">Entreprise (plusieurs personnes)</option>
+                <option value="Classe Royal">Royal</option>
+                <option value="Abonnement Classe Moyen">Abonnement (contacter l'admin)</option>
+                <option value="Jet Privé">Jet privé / ans</option>
             </select>
 
             <label for="date">Date:</label>
             <input type="date" id="date" required>
 
             <label>
-                <input type="checkbox" id="non-visible">
-                Ne pas afficher dans les horaires (10 jours)
+                <input type="checkbox" id="non-visible"> Ne pas afficher dans les horaires (10 jours)
             </label>
 
             <button onclick="makeReservation()">Réserver</button>
@@ -64,39 +57,17 @@
             <p>Réservation effectuée avec succès!</p>
             <button onclick="window.location.href='mes-reservations.html'">Voir Mes Réservations</button>
         </div>
-
-        <h3>tarifs des classes</h3>
-        <table>
-            <tr><th>Classe</th><th>Prix</th></tr>
-            <tr><td>Classe Simple</td><td>2d</td></tr>
-            <tr><td>Classe Moyen</td><td>5d</td></tr>
-            <tr><td>Classe Business</td><td>10d + 15e</td></tr>
-            <tr><td>Classe Entreprise</td><td>14d / p</td></tr>
-            <tr><td>Classe Royal</td><td>10 lingot de neterithe / 65 diamant</td></tr>
-            <tr><td>Abonnement Classe Moyen</td><td>120d/m</td></tr>
-            <tr><td>Jet Privé</td><td>100 - 800d / mo</td></tr>
-        </table>
-
-        <h3>Tarifs des cargaison en +</h3>
-        <table>
-            <tr><th>slot</th><th>Prix</th></tr>
-            <tr><td>1 lot</td><td>gratuit</td></tr>
-            <tr><td>+1 slot</td><td>5d</td></tr>
-            <tr><td>20 slot max</td><td>50d</td></tr>
-        </table>
     </div>
-
-    <a href="login.html" target="_blank" class="play-button">S'inscrire</a>
 
     <script>
         const prices = {
             "Classe Simple": 2,
-"Classe Moyen": 5,
-"Classe Business": 10,
-"Classe Entreprise": 14,
-"Classe Royal": 56,
-"Abonnement Classe Moyen": 120,
-"Jet privé": 100,
+            "Classe Moyen": 5,
+            "Classe Business": 10,
+            "Classe Entreprise": 14,
+            "Classe Royal": 56,
+            "Abonnement Classe Moyen": 120,
+            "Jet Privé": 100,
         };
 
         function checkAuthButtons() {
@@ -104,51 +75,48 @@
             let authButtons = document.getElementById("auth-buttons");
             if (currentUser) {
                 authButtons.innerHTML = '<button onclick="logout()">Déconnexion</button>';
-                document.getElementById("reservation-form").style.display = "block"; // Montrer le formulaire de réservation
+                document.getElementById("reservation-form").style.display = "block";
             } else {
                 authButtons.innerHTML = '<button onclick="window.location.href=\'login.html\'">Connexion</button>' +
                     '<button onclick="window.location.href=\'register.html\'">S\'inscrire</button>';
-                document.getElementById("error-message").innerText = "Vous devez être connecté pour effectuer une réservation.";
+                document.getElementById("error-message").innerText = "Vous devez être connecté pour réserver.";
             }
         }
 
         function makeReservation() {
-            const name = document.getElementById("name").value;
+            const nom = document.getElementById("name").value;
             const slots = parseInt(document.getElementById("slots").value);
             const date = document.getElementById("date").value;
             const nonVisible = document.getElementById("non-visible").checked;
-            const reservationClass = document.getElementById("class").value;
+            const reservationClass = document.getElementById("reservation-class").value;
 
-            if (!name || !slots || !date) {
+            if (!nom || !slots || !date) {
                 document.getElementById("error-message").innerText = "Tous les champs sont obligatoires.";
                 return;
             }
 
             const currentUser = localStorage.getItem("currentUser");
             if (!currentUser) {
-                document.getElementById("error-message").innerText = "Vous devez être connecté pour effectuer une réservation.";
+                document.getElementById("error-message").innerText = "Vous devez être connecté pour réserver.";
                 return;
             }
 
-const reservation = {
-    nom: nom, // <-- Utilise "nom" au lieu de "name"
-    classe: reservationClass, // Ajout de la classe
-    date: date,
-    nonVisible: nonVisible,
-    username: currentUser,
-    price: (slots * prices[reservationClass])
-};
+            const reservation = {
+                nom: nom,
+                classe: reservationClass,
+                date: date,
+                nonVisible: nonVisible,
+                username: currentUser,
+                price: (slots * (prices[reservationClass] || 0))
+            };
 
-            // Ajouter la réservation dans les réservations
             const reservations = JSON.parse(localStorage.getItem("reservations")) || [];
             reservations.push(reservation);
             localStorage.setItem("reservations", JSON.stringify(reservations));
 
-            // Rediriger ou afficher un message de succès
             document.getElementById("reservation-form").style.display = "none";
             document.getElementById("reservation-info").style.display = "block";
 
-            // Ajouter à "Mes Réservations" et admin
             updateAdminAndUserReservations(reservation);
         }
 
@@ -176,5 +144,4 @@ const reservation = {
         window.onload = checkAuthButtons;
     </script>
 </body>
-
 </html>
