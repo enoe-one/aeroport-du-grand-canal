@@ -53,6 +53,10 @@
             text-align: center;
             margin-bottom: 20px;
         }
+        .cancelled {
+            background-color: red;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -132,34 +136,33 @@
             reservations.forEach((reservation, index) => {
                 const row = reservationsTable.insertRow();
                 row.innerHTML = `
-                        <td>${reservation.nom}</td>
-                        <td>${reservation.classe}</td>
-                        <td>${reservation.date}</td>
-                        <td>
-                            <button onclick="editReservation(${index})">Modifier</button>
-                            <button onclick="deleteReservation(${index})">Supprimer</button>
-                        </td>
-                    `;
+                    <td>${reservation.nom}</td>
+                    <td>${reservation.classe}</td>
+                    <td>${reservation.date}</td>
+                    <td>
+                        <button onclick="editReservation(${index})">Modifier</button>
+                        <button onclick="deleteReservation(${index})">Supprimer</button>
+                    </td>
+                `;
             });
         }
 
-        // Charger les utilisateurs (comptes) depuis localStorage
-        function loadUsers() {
-            const users = JSON.parse(localStorage.getItem('users')) || [];
-            const usersTable = document.getElementById("users-table").getElementsByTagName('tbody')[0];
-            usersTable.innerHTML = '';
+        // Supprimer la réservation
+        function deleteReservation(index) {
+            const reservations = JSON.parse(localStorage.getItem('reservations')) || [];
+            const reservation = reservations[index];
 
-            users.forEach((user, index) => {
-                const row = usersTable.insertRow();
-                row.innerHTML = `
-                        <td>${user.username}</td>
-                        <td>${user.email}</td>
-                        <td>
-                            <button onclick="editUser(${index})">Modifier</button>
-                            <button onclick="deleteUser(${index})">Supprimer</button>
-                        </td>
-                    `;
-            });
+            // Supprimer la réservation de "Mes Réservations"
+            const userReservations = JSON.parse(localStorage.getItem('userReservations')) || {};
+            for (let user in userReservations) {
+                userReservations[user] = userReservations[user].filter(res => res.nom !== reservation.nom);
+            }
+            localStorage.setItem('userReservations', JSON.stringify(userReservations));
+
+            // Supprimer la réservation de l'admin
+            reservations.splice(index, 1);
+            localStorage.setItem('reservations', JSON.stringify(reservations));
+            loadReservations();
         }
 
         // Fonction de modification de la réservation
@@ -179,12 +182,23 @@
             }
         }
 
-        // Fonction de suppression de la réservation
-        function deleteReservation(index) {
-            const reservations = JSON.parse(localStorage.getItem('reservations')) || [];
-            reservations.splice(index, 1);
-            localStorage.setItem('reservations', JSON.stringify(reservations));
-            loadReservations();
+        // Charger les utilisateurs depuis localStorage
+        function loadUsers() {
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const usersTable = document.getElementById("users-table").getElementsByTagName('tbody')[0];
+            usersTable.innerHTML = '';
+
+            users.forEach((user, index) => {
+                const row = usersTable.insertRow();
+                row.innerHTML = `
+                    <td>${user.username}</td>
+                    <td>${user.email}</td>
+                    <td>
+                        <button onclick="editUser(${index})">Modifier</button>
+                        <button onclick="deleteUser(${index})">Supprimer</button>
+                    </td>
+                `;
+            });
         }
 
         // Fonction de modification du compte utilisateur
@@ -210,6 +224,5 @@
             loadUsers();
         }
     </script>
-
 </body>
 </html>
