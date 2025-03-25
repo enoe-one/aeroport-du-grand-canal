@@ -50,7 +50,7 @@
 
         // Fonction pour afficher les réservations
         function displayReservations(currentUser) {
-            let reservations = JSON.parse(localStorage.getItem('reservations')) || [];
+let userReservations = reservations.filter(reservation => reservation.username === currentUser);
             let userReservations = reservations.filter(reservation => reservation.nom === currentUser);
 
             if (userReservations.length === 0) {
