@@ -4,12 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mes Réservations - Aéroport du Grand Canal</title>
-<link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <!-- Aucun texte ici, car il est maintenant dans la bannière -->
-    </header>
     <div class="banner">
         <div class="banner-text">Mes Réservations - Aéroport du Grand Canal</div>
     </div>
@@ -19,7 +16,7 @@
         <a href="reservation.html">Réservations cargaison</a>
         <a href="reservation-vol.html">Réservations vols</a>
         <a href="horaires.html">Horaires</a>
-        <a href="mes-reservations.html">mes réservations</a>
+        <a href="mes-reservations.html">Mes réservations</a>
     </nav>
 
     <div class="container">
@@ -34,55 +31,55 @@
     <script>
         function checkLogin() {
             let currentUser = localStorage.getItem("currentUser");
-
             if (currentUser) {
-                // Si l'utilisateur est connecté, on affiche ses réservations
                 document.getElementById("login-message").innerText = '';
                 document.getElementById("login-link").style.display = "none";
                 displayReservations(currentUser);
             } else {
-                // Si l'utilisateur n'est pas connecté, on affiche un message
                 document.getElementById("reservations-list").innerHTML = '';
                 document.getElementById("login-message").innerText = 'Vous devez être connecté pour voir vos réservations.';
                 document.getElementById("login-link").style.display = "block";
             }
         }
 
-        // Fonction pour afficher les réservations
         function displayReservations(currentUser) {
-let userReservations = reservations.filter(reservation => reservation.username === currentUser);
-            let userReservations = reservations.filter(reservation => reservation.nom === currentUser);
-
-            if (userReservations.length === 0) {
+            let userReservations = JSON.parse(localStorage.getItem("userReservations")) || {};
+            let reservations = userReservations[currentUser] || [];
+            
+            if (reservations.length === 0) {
                 document.getElementById("reservations-list").innerHTML = '<p>Aucune réservation trouvée.</p>';
                 return;
             }
 
-            let reservationsHTML = userReservations.map((reservation, index) => {
+            let reservationsHTML = reservations.map((reservation, index) => {
                 return `
-                            <div class="reservation">
-                                <div>
-                                    <strong>Nom:</strong> ${reservation.nom}<br>
-                                    <strong>Classe:</strong> ${reservation.classe}<br>
-                                    <strong>Date de départ:</strong> ${reservation.date}
-                                </div>
-                                <button onclick="cancelReservation(${index})">Annuler</button>
-                            </div>
-                        `;
+                    <div class="reservation">
+                        <div>
+                            <strong>Nom:</strong> ${reservation.nom}<br>
+                            <strong>Classe:</strong> ${reservation.classe}<br>
+                            <strong>Date de départ:</strong> ${reservation.date}
+                        </div>
+                        <button onclick="cancelReservation(${index})">Annuler</button>
+                    </div>
+                `;
             }).join('');
 
             document.getElementById("reservations-list").innerHTML = reservationsHTML;
         }
 
-        // Fonction pour annuler une réservation
         function cancelReservation(index) {
-            let reservations = JSON.parse(localStorage.getItem('reservations')) || [];
-            reservations.splice(index, 1); // Supprimer la réservation
-            localStorage.setItem('reservations', JSON.stringify(reservations));
-            displayReservations(localStorage.getItem("currentUser")); // Mettre à jour la liste des réservations
+            let currentUser = localStorage.getItem("currentUser");
+            let userReservations = JSON.parse(localStorage.getItem("userReservations")) || {};
+            
+            if (userReservations[currentUser]) {
+                userReservations[currentUser].splice(index, 1);
+                localStorage.setItem("userReservations", JSON.stringify(userReservations));
+            }
+            
+            displayReservations(currentUser);
         }
 
-        window.onload = checkLogin;  // Appelle la fonction au chargement de la page
+        window.onload = checkLogin;
     </script>
 </body>
 </html>
