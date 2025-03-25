@@ -130,14 +130,14 @@
                 return;
             }
 
-            const reservation = {
-                name: name,
-                slots: slots,
-                date: date,
-                nonVisible: nonVisible,
-                username: currentUser,
-                price: (slots * prices[reservationClass])
-            };
+const reservation = {
+    nom: nom, // <-- Utilise "nom" au lieu de "name"
+    classe: reservationClass, // Ajout de la classe
+    date: date,
+    nonVisible: nonVisible,
+    username: currentUser,
+    price: (slots * prices[reservationClass])
+};
 
             // Ajouter la réservation dans les réservations
             const reservations = JSON.parse(localStorage.getItem("reservations")) || [];
