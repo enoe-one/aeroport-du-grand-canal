@@ -76,6 +76,16 @@
                 localStorage.setItem("userReservations", JSON.stringify(userReservations));
             }
             
+            // Informer l'admin que la réservation a été annulée
+            const reservations = JSON.parse(localStorage.getItem('reservations')) || [];
+            const reservation = reservations[index];
+            const adminReservations = JSON.parse(localStorage.getItem('reservations')) || [];
+
+            if (adminReservations) {
+                adminReservations[index].cancelled = true;  // Marque la réservation comme annulée
+                localStorage.setItem('reservations', JSON.stringify(adminReservations));
+            }
+
             displayReservations(currentUser);
         }
 
