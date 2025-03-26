@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -88,7 +87,6 @@
                         <th>Nom</th>
                         <th>Classe</th>
                         <th>Date</th>
-                        <th>Type de Réservation</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -146,7 +144,6 @@
                     <td>${reservation.nom}</td>
                     <td>${reservation.classe}</td>
                     <td>${reservation.date}</td>
-                    <td>${reservation.type}</td> <!-- Affichage du type de réservation -->
                     <td>
                         <button onclick="editReservation(${index})">Modifier</button>
                         <button onclick="deleteReservation(${index})">Supprimer</button>
@@ -180,13 +177,11 @@
             const newNom = prompt("Modifier le nom de la réservation:", reservation.nom);
             const newClasse = prompt("Modifier la classe:", reservation.classe);
             const newDate = prompt("Modifier la date:", reservation.date);
-            const newType = prompt("Modifier le type de réservation (Cargaison/Vol):", reservation.type);
 
-            if (newNom && newClasse && newDate && newType) {
+            if (newNom && newClasse && newDate) {
                 reservation.nom = newNom;
                 reservation.classe = newClasse;
                 reservation.date = newDate;
-                reservation.type = newType; // Mise à jour du type
                 localStorage.setItem('reservations', JSON.stringify(reservations));
                 loadReservations();
             }
