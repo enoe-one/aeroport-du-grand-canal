@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Horaires - Aéroport du Grand Canal</title>
 
- <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css">
 
     <style>
         /* Styles existants */
@@ -167,14 +167,17 @@
             } else {
                 noFlightsMessage.style.display = "none";
                 reservations.forEach(res => {
-                    let row = `<tr>
-                        <td>${res.nom}</td>
-                        <td>${res.destination}</td>
-                        <td>${res.depart}</td>
-                        <td>${res.arrivee}</td>
-                        <td>${res.classe}</td>
-                    </tr>`;
-                    tableBody.innerHTML += row;
+                    // Si la réservation est marquée comme "vol secret", on ne l'affiche pas
+                    if (res.volSecret !== true) {
+                        let row = `<tr>
+                            <td>${res.nom}</td>
+                            <td>${res.destination}</td>
+                            <td>${res.depart}</td>
+                            <td>${res.arrivee}</td>
+                            <td>${res.classe}</td>
+                        </tr>`;
+                        tableBody.innerHTML += row;
+                    }
                 });
             }
         });
