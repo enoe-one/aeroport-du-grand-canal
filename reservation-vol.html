@@ -70,19 +70,6 @@
             "Jet Privé": 100,
         };
 
-        function checkAuthButtons() {
-            let currentUser = localStorage.getItem("currentUser");
-            let authButtons = document.getElementById("auth-buttons");
-            if (currentUser) {
-                authButtons.innerHTML = '<button onclick="logout()">Déconnexion</button>';
-                document.getElementById("reservation-form").style.display = "block";
-            } else {
-                authButtons.innerHTML = '<button onclick="window.location.href=\'login.html\'">Connexion</button>' +
-                    '<button onclick="window.location.href=\'register.html\'">S\'inscrire</button>';
-                document.getElementById("error-message").innerText = "Vous devez être connecté pour réserver.";
-            }
-        }
-
         function makeReservation() {
             const nom = document.getElementById("name").value;
             const slots = parseInt(document.getElementById("slots").value);
@@ -107,7 +94,8 @@
                 date: date,
                 nonVisible: nonVisible,
                 username: currentUser,
-                price: (slots * (prices[reservationClass] || 0))
+                price: (slots * (prices[reservationClass] || 0)),
+                type: "vol"
             };
 
             const reservations = JSON.parse(localStorage.getItem("reservations")) || [];
@@ -139,6 +127,19 @@
             localStorage.removeItem("currentUser");
             alert("Déconnexion réussie");
             window.location.reload();
+        }
+
+        function checkAuthButtons() {
+            let currentUser = localStorage.getItem("currentUser");
+            let authButtons = document.getElementById("auth-buttons");
+            if (currentUser) {
+                authButtons.innerHTML = '<button onclick="logout()">Déconnexion</button>';
+                document.getElementById("reservation-form").style.display = "block";
+            } else {
+                authButtons.innerHTML = '<button onclick="window.location.href=\'login.html\'">Connexion</button>' +
+                    '<button onclick="window.location.href=\'register.html\'">S\'inscrire</button>';
+                document.getElementById("error-message").innerText = "Vous devez être connecté pour réserver.";
+            }
         }
 
         window.onload = checkAuthButtons;
