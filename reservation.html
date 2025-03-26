@@ -18,7 +18,7 @@
         <a href="reservation.html">Réservations cargaison</a>
         <a href="reservation-vol.html">Réservations vols</a>
         <a href="horaires.html">Horaires</a>
-        <a href="mes-reservations.html">mes réservations</a>
+        <a href="mes-reservations.html">Mes réservations</a>
     </nav>
 
     <div class="container">
@@ -88,52 +88,6 @@
     <a href="login.html" target="_blank" class="play-button">S'inscrire</a>
 
     <script>
-        <script>
-    function makeReservation() {
-        const name = document.getElementById("name").value;
-        const slots = parseInt(document.getElementById("slots").value);
-        const date = document.getElementById("date").value;
-        const nonVisible = document.getElementById("non-visible").checked;
-        const reservationClass = document.getElementById("class").value;
-
-        if (!name || !slots || !date) {
-            document.getElementById("error-message").innerText = "Tous les champs sont obligatoires.";
-            return;
-        }
-
-        const currentUser = localStorage.getItem("currentUser");
-        const price = (slots * prices[reservationClass]);
-
-        const reservation = {
-            name,
-            username: currentUser,
-            slots,
-            date,
-            price,
-            class: reservationClass,
-            nonVisible,
-            type: "cargaison"  // Identifie la réservation comme une cargaison
-        };
-
-        // Récupérer les réservations de l'utilisateur
-        let userReservations = JSON.parse(localStorage.getItem("userReservations")) || {};
-        if (!userReservations[currentUser]) {
-            userReservations[currentUser] = [];
-        }
-
-        // Ajouter la réservation à l'utilisateur
-        userReservations[currentUser].push(reservation);
-
-        // Récupérer les réservations des administrateurs
-        let adminReservations = JSON.parse(localStorage.getItem("adminReservations")) || [];
-        adminReservations.push(reservation);
-
-        // Sauvegarder les réservations mises à jour
-        localStorage.setItem("userReservations", JSON.stringify(userReservations));
-        localStorage.setItem("adminReservations", JSON.stringify(adminReservations));
-
-        document.getElementById("reservation-info").style.display = "block";
-    }
         const prices = {
             "Classe Simple": 2,
             "Classe Moyen": 5,
@@ -143,19 +97,6 @@
             "Abonnement Classe Moyen": 120,
             "Jet Privé": 100,
         };
-
-        function checkAuthButtons() {
-            let currentUser = localStorage.getItem("currentUser");
-            let authButtons = document.getElementById("auth-buttons");
-            if (currentUser) {
-                authButtons.innerHTML = '<button onclick="logout()">Déconnexion</button>';
-                document.getElementById("reservation-form").style.display = "block";
-            } else {
-                authButtons.innerHTML = '<button onclick="window.location.href=\'login.html\'">Connexion</button>' +
-                    '<button onclick="window.location.href=\'register.html\'">S\'inscrire</button>';
-                document.getElementById("error-message").innerText = "Vous devez être connecté pour effectuer une réservation.";
-            }
-        }
 
         function makeReservation() {
             const name = document.getElementById("name").value;
@@ -170,7 +111,7 @@
             }
 
             const currentUser = localStorage.getItem("currentUser");
-            const price = (slots * prices[reservationClass]);
+            const price = slots * (prices[reservationClass] || 0);
 
             const reservation = {
                 name,
@@ -182,27 +123,42 @@
                 nonVisible
             };
 
-            // Récupérer les réservations de l'utilisateur
             let userReservations = JSON.parse(localStorage.getItem("userReservations")) || {};
             if (!userReservations[currentUser]) {
                 userReservations[currentUser] = [];
             }
 
-            // Ajouter la réservation à l'utilisateur
             userReservations[currentUser].push(reservation);
 
-            // Récupérer les réservations des administrateurs
             let adminReservations = JSON.parse(localStorage.getItem("adminReservations")) || [];
             adminReservations.push(reservation);
 
-            // Sauvegarder les réservations mises à jour
             localStorage.setItem("userReservations", JSON.stringify(userReservations));
             localStorage.setItem("adminReservations", JSON.stringify(adminReservations));
 
             document.getElementById("reservation-info").style.display = "block";
         }
 
-        checkAuthButtons();
+        function checkAuthButtons() {
+            let currentUser = localStorage.getItem("currentUser");
+            let authButtons = document.getElementById("auth-buttons");
+            if (currentUser) {
+                authButtons.innerHTML = '<button onclick="logout()">Déconnexion</button>';
+                document.getElementById("reservation-form").style.display = "block";
+            } else {
+                authButtons.innerHTML = '<button onclick="window.location.href=\'login.html\'">Connexion</button>' +
+                    '<button onclick="window.location.href=\'register.html\'">S\'inscrire</button>';
+                document.getElementById("error-message").innerText = "Vous devez être connecté pour effectuer une réservation.";
+            }
+        }
+
+        window.onload = checkAuthButtons;
+
+        function logout() {
+            localStorage.removeItem("currentUser");
+            alert("Déconnexion réussie");
+            window.location.reload();
+        }
     </script>
 
 </body>
