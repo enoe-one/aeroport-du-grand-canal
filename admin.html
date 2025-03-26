@@ -134,15 +134,21 @@
         function loadReservations() {
             const reservations = JSON.parse(localStorage.getItem('reservations')) || [];
             const reservationsTable = document.getElementById("reservations-table").getElementsByTagName('tbody')[0];
-            reservationsTable.innerHTML = '';
+            reservationsTable.innerHTML = ''; // Vide la table avant d'ajouter les nouvelles lignes
+
+            if (reservations.length === 0) {
+                const row = reservationsTable.insertRow();
+                row.innerHTML = "<td colspan='5' style='text-align: center;'>Aucune réservation disponible</td>";
+            }
 
             reservations.forEach((reservation, index) => {
                 const row = reservationsTable.insertRow();
                 
                 // Appliquer la classe 'cancelled' si la réservation est annulée
-                const rowClass = reservation.cancelled ? 'cancelled' : '';
+                const rowClass = reservation.cancelled ? 'cancelled' : ''; 
                 row.classList.add(rowClass);
-                
+
+                // Ajouter les données de la réservation dans la ligne du tableau
                 row.innerHTML = `
                     <td>${reservation.nom}</td>
                     <td>${reservation.classe}</td>
@@ -195,7 +201,7 @@
         function loadUsers() {
             const users = JSON.parse(localStorage.getItem('users')) || [];
             const usersTable = document.getElementById("users-table").getElementsByTagName('tbody')[0];
-            usersTable.innerHTML = '';
+            usersTable.innerHTML = ''; // Vide le tableau des utilisateurs
 
             users.forEach((user, index) => {
                 const row = usersTable.insertRow();
