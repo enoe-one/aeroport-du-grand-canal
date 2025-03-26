@@ -62,7 +62,7 @@
                         <button onclick="cancelReservation(${index})">Annuler</button>
                     </div>
                 `;
-            }).join('');
+            }).join(''); 
 
             document.getElementById("reservations-list").innerHTML = reservationsHTML;
         }
@@ -72,20 +72,19 @@
             let userReservations = JSON.parse(localStorage.getItem("userReservations")) || {};
             
             if (userReservations[currentUser]) {
+                // Supprimer la réservation de l'utilisateur
                 userReservations[currentUser].splice(index, 1);
                 localStorage.setItem("userReservations", JSON.stringify(userReservations));
             }
-            
-            // Informer l'admin que la réservation a été annulée
-            const reservations = JSON.parse(localStorage.getItem('reservations')) || [];
-            const reservation = reservations[index];
-            const adminReservations = JSON.parse(localStorage.getItem('reservations')) || [];
 
-            if (adminReservations) {
-                adminReservations[index].cancelled = true;  // Marque la réservation comme annulée
-                localStorage.setItem('reservations', JSON.stringify(adminReservations));
+            // Annuler la réservation dans la liste globale
+            let allReservations = JSON.parse(localStorage.getItem('reservations')) || [];
+            if (allReservations[index]) {
+                allReservations[index].cancelled = true; // Marquer la réservation comme annulée
+                localStorage.setItem('reservations', JSON.stringify(allReservations));
             }
 
+            // Mettre à jour l'affichage
             displayReservations(currentUser);
         }
 
