@@ -44,6 +44,8 @@
             <label for="date">Date:</label>
             <input type="date" id="date" required>
 
+            <label for="non-visible">Cacher la réservation (10 diamants):</label>
+            <input type="checkbox" id="non-visible">
 
             <button onclick="makeReservation()">Réserver</button>
         </div>
@@ -85,6 +87,7 @@
                 return;
             }
 
+            // Ajout du statut "vol" pour l'admin
             const reservation = {
                 nom: nom,
                 classe: reservationClass,
@@ -93,7 +96,8 @@
                 nonVisible: nonVisible,
                 username: currentUser,
                 price: (slots * (prices[reservationClass] || 0)),
-                type: "vol"
+                type: "vol", // Spécifier que c'est une réservation pour un vol
+                status: "effectuée"  // Marquer la réservation comme effectuée
             };
 
             const reservations = JSON.parse(localStorage.getItem("reservations")) || [];
@@ -118,6 +122,7 @@
 
             adminReservations.push(reservation);
 
+            // Si la réservation n'est pas "non visible", elle apparaît dans horairesReservations
             if (!reservation.nonVisible) {
                 horairesReservations.push(reservation);
             }
