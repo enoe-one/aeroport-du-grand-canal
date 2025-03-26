@@ -91,6 +91,7 @@
             const reservation = {
                 nom: nom,
                 classe: reservationClass,
+                slots: slots,
                 date: date,
                 nonVisible: nonVisible,
                 username: currentUser,
@@ -111,6 +112,7 @@
         function updateAdminAndUserReservations(reservation) {
             const userReservations = JSON.parse(localStorage.getItem("userReservations")) || {};
             const adminReservations = JSON.parse(localStorage.getItem("adminReservations")) || [];
+            const horairesReservations = JSON.parse(localStorage.getItem("horairesReservations")) || [];
 
             if (!userReservations[reservation.username]) {
                 userReservations[reservation.username] = [];
@@ -119,8 +121,13 @@
 
             adminReservations.push(reservation);
 
+            if (!reservation.nonVisible) {
+                horairesReservations.push(reservation);
+            }
+
             localStorage.setItem("userReservations", JSON.stringify(userReservations));
             localStorage.setItem("adminReservations", JSON.stringify(adminReservations));
+            localStorage.setItem("horairesReservations", JSON.stringify(horairesReservations));
         }
 
         function logout() {
