@@ -87,6 +87,7 @@
                         <th>Nom</th>
                         <th>Classe</th>
                         <th>Date</th>
+                        <th>Type</th> <!-- Nouvelle colonne pour le type -->
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -94,8 +95,6 @@
                     <!-- Les lignes de réservation seront insérées ici -->
                 </tbody>
             </table>
-
-            <button onclick="resetReservations()">Réinitialiser toutes les réservations</button>
 
             <h2>Comptes Utilisateurs</h2>
             <table id="users-table">
@@ -110,6 +109,8 @@
                     <!-- Les lignes de comptes utilisateurs seront insérées ici -->
                 </tbody>
             </table>
+
+            <button onclick="resetReservations()">Réinitialiser toutes les réservations</button>
         </div>
     </div>
 
@@ -146,12 +147,21 @@
                     <td>${reservation.nom}</td>
                     <td>${reservation.classe}</td>
                     <td>${reservation.date}</td>
+                    <td>${reservation.type || 'Non spécifié'}</td> <!-- Affichage du type -->
                     <td>
                         <button onclick="editReservation(${index})">Modifier</button>
                         <button onclick="deleteReservation(${index})">Supprimer</button>
                     </td>
                 `;
             });
+        }
+
+        // Fonction de réinitialisation de toutes les réservations
+        function resetReservations() {
+            if (confirm("Êtes-vous sûr de vouloir supprimer toutes les réservations ?")) {
+                localStorage.setItem('reservations', JSON.stringify([]));  // Réinitialiser toutes les réservations
+                loadReservations();
+            }
         }
 
         // Supprimer la réservation
@@ -169,11 +179,13 @@
             const newNom = prompt("Modifier le nom de la réservation:", reservation.nom);
             const newClasse = prompt("Modifier la classe:", reservation.classe);
             const newDate = prompt("Modifier la date:", reservation.date);
+            const newType = prompt("Modifier le type (vol/cargaison):", reservation.type || "vol");
 
-            if (newNom && newClasse && newDate) {
+            if (newNom && newClasse && newDate && newType) {
                 reservation.nom = newNom;
                 reservation.classe = newClasse;
                 reservation.date = newDate;
+                reservation.type = newType;
                 localStorage.setItem('reservations', JSON.stringify(reservations));
                 loadReservations();
             }
@@ -219,14 +231,6 @@
             users.splice(index, 1);
             localStorage.setItem('users', JSON.stringify(users));
             loadUsers();
-        }
-
-        // Fonction pour réinitialiser toutes les réservations
-        function resetReservations() {
-            if (confirm("Êtes-vous sûr de vouloir réinitialiser toutes les réservations ?")) {
-                localStorage.removeItem('reservations');
-                loadReservations();
-            }
         }
     </script>
 </body>
