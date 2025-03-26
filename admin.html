@@ -135,6 +135,11 @@
 
             reservations.forEach((reservation, index) => {
                 const row = reservationsTable.insertRow();
+                
+                // Appliquer la classe 'cancelled' si la réservation est annulée
+                const rowClass = reservation.cancelled ? 'cancelled' : '';
+                row.classList.add(rowClass);
+                
                 row.innerHTML = `
                     <td>${reservation.nom}</td>
                     <td>${reservation.classe}</td>
