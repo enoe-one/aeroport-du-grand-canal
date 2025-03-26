@@ -87,7 +87,7 @@
                         <th>Nom</th>
                         <th>Classe</th>
                         <th>Date</th>
-                        <th>Type</th> <!-- Nouvelle colonne pour le type -->
+                        <th>Type</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -134,26 +134,21 @@
         function loadReservations() {
             const reservations = JSON.parse(localStorage.getItem('reservations')) || [];
             const reservationsTable = document.getElementById("reservations-table").getElementsByTagName('tbody')[0];
-            reservationsTable.innerHTML = ''; // Vide la table avant d'ajouter les nouvelles lignes
-
-            if (reservations.length === 0) {
-                const row = reservationsTable.insertRow();
-                row.innerHTML = "<td colspan='5' style='text-align: center;'>Aucune réservation disponible</td>";
-            }
+            reservationsTable.innerHTML = '';
 
             reservations.forEach((reservation, index) => {
                 const row = reservationsTable.insertRow();
-                
-                // Appliquer la classe 'cancelled' si la réservation est annulée
-                const rowClass = reservation.cancelled ? 'cancelled' : ''; 
-                row.classList.add(rowClass);
 
-                // Ajouter les données de la réservation dans la ligne du tableau
+                // Appliquer la classe 'cancelled' uniquement si la réservation est annulée
+                if (reservation.cancelled) {
+                    row.classList.add('cancelled');
+                }
+
                 row.innerHTML = `
                     <td>${reservation.nom}</td>
                     <td>${reservation.classe}</td>
                     <td>${reservation.date}</td>
-                    <td>${reservation.type || 'Non spécifié'}</td> <!-- Affichage du type -->
+                    <td>${reservation.type || 'Non spécifié'}</td>
                     <td>
                         <button onclick="editReservation(${index})">Modifier</button>
                         <button onclick="deleteReservation(${index})">Supprimer</button>
@@ -201,7 +196,7 @@
         function loadUsers() {
             const users = JSON.parse(localStorage.getItem('users')) || [];
             const usersTable = document.getElementById("users-table").getElementsByTagName('tbody')[0];
-            usersTable.innerHTML = ''; // Vide le tableau des utilisateurs
+            usersTable.innerHTML = '';
 
             users.forEach((user, index) => {
                 const row = usersTable.insertRow();
