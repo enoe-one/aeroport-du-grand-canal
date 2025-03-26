@@ -95,6 +95,8 @@
                 </tbody>
             </table>
 
+            <button onclick="resetReservations()">Réinitialiser toutes les réservations</button>
+
             <h2>Comptes Utilisateurs</h2>
             <table id="users-table">
                 <thead>
@@ -155,16 +157,6 @@
         // Supprimer la réservation
         function deleteReservation(index) {
             const reservations = JSON.parse(localStorage.getItem('reservations')) || [];
-            const reservation = reservations[index];
-
-            // Supprimer la réservation de "Mes Réservations"
-            const userReservations = JSON.parse(localStorage.getItem('userReservations')) || {};
-            for (let user in userReservations) {
-                userReservations[user] = userReservations[user].filter(res => res.nom !== reservation.nom);
-            }
-            localStorage.setItem('userReservations', JSON.stringify(userReservations));
-
-            // Supprimer la réservation de l'admin
             reservations.splice(index, 1);
             localStorage.setItem('reservations', JSON.stringify(reservations));
             loadReservations();
@@ -227,6 +219,14 @@
             users.splice(index, 1);
             localStorage.setItem('users', JSON.stringify(users));
             loadUsers();
+        }
+
+        // Fonction pour réinitialiser toutes les réservations
+        function resetReservations() {
+            if (confirm("Êtes-vous sûr de vouloir réinitialiser toutes les réservations ?")) {
+                localStorage.removeItem('reservations');
+                loadReservations();
+            }
         }
     </script>
 </body>
