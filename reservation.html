@@ -120,7 +120,8 @@
                 date,
                 price,
                 class: reservationClass,
-                nonVisible
+                nonVisible,
+                type: "cargaison" // Spécifier que c'est une réservation de cargaison
             };
 
             let userReservations = JSON.parse(localStorage.getItem("userReservations")) || {};
