@@ -30,6 +30,13 @@
             <label for="slots">Nombre de slots:</label>
             <input type="number" id="slots" placeholder="Nombre de slots" min="1" required>
 
+                        <label for="reservation-class">Classe de réservation:</label>
+            <select id="reservation-class" required>
+                <option value="Classe simple">Simple</option>
+                <option value="Classe rapide">rapide</option>
+            </select>
+
+            
             <label for="date">Date:</label>
             <input type="date" id="date" required>
 
@@ -49,13 +56,8 @@
 
     <script>
         const prices = {
-            "Classe Simple": 2,
-            "Classe Moyen": 5,
-            "Classe Business": 10,
-            "Classe Entreprise": 14,
-            "Classe Royal": 56,
-            "Abonnement Classe Moyen": 120,
-            "Jet Privé": 100,
+            "Classe Simple": 1,
+            "Classe rapide": 3,
         };
 
         function makeReservation() {
@@ -63,6 +65,7 @@
             const slots = parseInt(document.getElementById("slots").value);
             const date = document.getElementById("date").value;
             const nonVisible = document.getElementById("non-visible").checked;
+            const reservationClass = document.getElementById("reservation-class").value;
 
             if (!nom || !slots || !date) {
                 document.getElementById("error-message").innerText = "Tous les champs sont obligatoires.";
@@ -83,7 +86,7 @@
                 date: date,
                 nonVisible: nonVisible,
                 username: currentUser,
-price: (slots * 2), 
+                price: (slots * (prices[reservationClass] || 0)),
                 type: "cargaison", // Spécifier que c'est une réservation pour un vol
                 status: "effectuée"  // Marquer la réservation comme effectuée
             };
