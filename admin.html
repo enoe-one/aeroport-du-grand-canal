@@ -68,7 +68,7 @@
         <a href="reservation.html">Réservations cargaison</a>
         <a href="reservation-vol.html">Réservations vols</a>
         <a href="horaires.html">Horaires</a>
-        <a href="mes-reservations.html">mes réservations</a>
+        <a href="mes-reservations.html">Mes réservations</a>
     </nav>
     <div class="container" id="admin-container">
         <div id="admin-form">
@@ -117,7 +117,6 @@
     <script>
         const adminPassword = "aeronoe-mc2";
 
-        // Fonction de vérification du mot de passe
         function checkPassword() {
             const password = document.getElementById("password").value;
             if (password === adminPassword) {
@@ -130,7 +129,6 @@
             }
         }
 
-        // Charger les réservations depuis localStorage
         function loadReservations() {
             const reservations = JSON.parse(localStorage.getItem('reservations')) || [];
             const reservationsTable = document.getElementById("reservations-table").getElementsByTagName('tbody')[0];
@@ -139,7 +137,6 @@
             reservations.forEach((reservation, index) => {
                 const row = reservationsTable.insertRow();
 
-                // Appliquer la classe 'cancelled' uniquement si la réservation est annulée
                 if (reservation.cancelled) {
                     row.classList.add('cancelled');
                 }
@@ -157,23 +154,27 @@
             });
         }
 
-        // Fonction de réinitialisation de toutes les réservations
         function resetReservations() {
             if (confirm("Êtes-vous sûr de vouloir supprimer toutes les réservations ?")) {
-                localStorage.setItem('reservations', JSON.stringify([]));  // Réinitialiser toutes les réservations
+                localStorage.setItem('reservations', JSON.stringify([]));
+                localStorage.setItem('mesReservations', JSON.stringify([])); // Réinitialise aussi Mes Réservations
                 loadReservations();
             }
         }
 
-        // Supprimer la réservation
         function deleteReservation(index) {
             const reservations = JSON.parse(localStorage.getItem('reservations')) || [];
             reservations.splice(index, 1);
             localStorage.setItem('reservations', JSON.stringify(reservations));
+
+            // Supprime aussi de "Mes Réservations"
+            let mesReservations = JSON.parse(localStorage.getItem('mesReservations')) || [];
+            mesReservations = mesReservations.filter((_, i) => i !== index);
+            localStorage.setItem('mesReservations', JSON.stringify(mesReservations));
+
             loadReservations();
         }
 
-        // Fonction de modification de la réservation
         function editReservation(index) {
             const reservations = JSON.parse(localStorage.getItem('reservations')) || [];
             const reservation = reservations[index];
@@ -192,7 +193,6 @@
             }
         }
 
-        // Charger les utilisateurs depuis localStorage
         function loadUsers() {
             const users = JSON.parse(localStorage.getItem('users')) || [];
             const usersTable = document.getElementById("users-table").getElementsByTagName('tbody')[0];
@@ -211,7 +211,6 @@
             });
         }
 
-        // Fonction de modification du compte utilisateur
         function editUser(index) {
             const users = JSON.parse(localStorage.getItem('users')) || [];
             const user = users[index];
@@ -226,7 +225,6 @@
             }
         }
 
-        // Fonction de suppression du compte utilisateur
         function deleteUser(index) {
             const users = JSON.parse(localStorage.getItem('users')) || [];
             users.splice(index, 1);
