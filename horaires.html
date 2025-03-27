@@ -168,7 +168,7 @@
                 noFlightsMessage.style.display = "none";
                 reservations.forEach(res => {
                     // Si la réservation est marquée comme "vol secret", on ne l'affiche pas
-                    if (res.volSecret !== true) {
+                    if (res.nonVisible !== true) {
                         let row = `<tr>
                             <td>${res.nom}</td>
                             <td>${res.destination}</td>
