@@ -88,12 +88,9 @@
                         <th>Classe</th>
                         <th>Date</th>
                         <th>Type</th>
-                        <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <!-- Les lignes de réservation seront insérées ici -->
-                </tbody>
+                <tbody></tbody>
             </table>
 
             <h2>Comptes Utilisateurs</h2>
@@ -102,15 +99,10 @@
                     <tr>
                         <th>Nom d'utilisateur</th>
                         <th>Email</th>
-                        <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <!-- Les lignes de comptes utilisateurs seront insérées ici -->
-                </tbody>
+                <tbody></tbody>
             </table>
-
-            <button onclick="resetReservations()">Réinitialiser toutes les réservations</button>
         </div>
     </div>
 
@@ -130,106 +122,41 @@
         }
 
         function loadReservations() {
-            const reservations = JSON.parse(localStorage.getItem('reservations')) || [];
-            const reservationsTable = document.getElementById("reservations-table").getElementsByTagName('tbody')[0];
-            reservationsTable.innerHTML = '';
+            fetch("data.json")
+                .then(response => response.json())
+                .then(data => {
+                    const reservationsTable = document.getElementById("reservations-table").getElementsByTagName('tbody')[0];
+                    reservationsTable.innerHTML = '';
 
-            reservations.forEach((reservation, index) => {
-                const row = reservationsTable.insertRow();
-
-                if (reservation.cancelled) {
-                    row.classList.add('cancelled');
-                }
-
-                row.innerHTML = `
-                    <td>${reservation.nom}</td>
-                    <td>${reservation.classe}</td>
-                    <td>${reservation.date}</td>
-                    <td>${reservation.type || 'Non spécifié'}</td>
-                    <td>
-                        <button onclick="editReservation(${index})">Modifier</button>
-                        <button onclick="deleteReservation(${index})">Supprimer</button>
-                    </td>
-                `;
-            });
-        }
-
-        function resetReservations() {
-            if (confirm("Êtes-vous sûr de vouloir supprimer toutes les réservations ?")) {
-                localStorage.setItem('reservations', JSON.stringify([]));
-                localStorage.setItem('mesReservations', JSON.stringify([])); // Réinitialise aussi Mes Réservations
-                loadReservations();
-            }
-        }
-
-        function deleteReservation(index) {
-            const reservations = JSON.parse(localStorage.getItem('reservations')) || [];
-            reservations.splice(index, 1);
-            localStorage.setItem('reservations', JSON.stringify(reservations));
-
-            // Supprime aussi de "Mes Réservations"
-            let mesReservations = JSON.parse(localStorage.getItem('mesReservations')) || [];
-            mesReservations = mesReservations.filter((_, i) => i !== index);
-            localStorage.setItem('mesReservations', JSON.stringify(mesReservations));
-
-            loadReservations();
-        }
-
-        function editReservation(index) {
-            const reservations = JSON.parse(localStorage.getItem('reservations')) || [];
-            const reservation = reservations[index];
-            const newNom = prompt("Modifier le nom de la réservation:", reservation.nom);
-            const newClasse = prompt("Modifier la classe:", reservation.classe);
-            const newDate = prompt("Modifier la date:", reservation.date);
-            const newType = prompt("Modifier le type (vol/cargaison):", reservation.type || "vol");
-
-            if (newNom && newClasse && newDate && newType) {
-                reservation.nom = newNom;
-                reservation.classe = newClasse;
-                reservation.date = newDate;
-                reservation.type = newType;
-                localStorage.setItem('reservations', JSON.stringify(reservations));
-                loadReservations();
-            }
+                    data.reservations.forEach(reservation => {
+                        const row = reservationsTable.insertRow();
+                        row.innerHTML = `
+                            <td>${reservation.nom}</td>
+                            <td>${reservation.classe}</td>
+                            <td>${reservation.date}</td>
+                            <td>${reservation.type || 'Non spécifié'}</td>
+                        `;
+                    });
+                })
+                .catch(error => console.error("Erreur lors du chargement des réservations:", error));
         }
 
         function loadUsers() {
-            const users = JSON.parse(localStorage.getItem('users')) || [];
-            const usersTable = document.getElementById("users-table").getElementsByTagName('tbody')[0];
-            usersTable.innerHTML = '';
+            fetch("data.json")
+                .then(response => response.json())
+                .then(data => {
+                    const usersTable = document.getElementById("users-table").getElementsByTagName('tbody')[0];
+                    usersTable.innerHTML = '';
 
-            users.forEach((user, index) => {
-                const row = usersTable.insertRow();
-                row.innerHTML = `
-                    <td>${user.username}</td>
-                    <td>${user.email}</td>
-                    <td>
-                        <button onclick="editUser(${index})">Modifier</button>
-                        <button onclick="deleteUser(${index})">Supprimer</button>
-                    </td>
-                `;
-            });
-        }
-
-        function editUser(index) {
-            const users = JSON.parse(localStorage.getItem('users')) || [];
-            const user = users[index];
-            const newUsername = prompt("Modifier le nom d'utilisateur:", user.username);
-            const newEmail = prompt("Modifier l'email:", user.email);
-
-            if (newUsername && newEmail) {
-                user.username = newUsername;
-                user.email = newEmail;
-                localStorage.setItem('users', JSON.stringify(users));
-                loadUsers();
-            }
-        }
-
-        function deleteUser(index) {
-            const users = JSON.parse(localStorage.getItem('users')) || [];
-            users.splice(index, 1);
-            localStorage.setItem('users', JSON.stringify(users));
-            loadUsers();
+                    data.users.forEach(user => {
+                        const row = usersTable.insertRow();
+                        row.innerHTML = `
+                            <td>${user.username}</td>
+                            <td>${user.email}</td>
+                        `;
+                    });
+                })
+                .catch(error => console.error("Erreur lors du chargement des utilisateurs:", error));
         }
     </script>
 </body>
