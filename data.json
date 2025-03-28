@@ -1,0 +1,26 @@
+{
+    "reservations": [
+        {
+            "nom": "Jean Dupont",
+            "classe": "Économique",
+            "date": "2025-04-01",
+            "type": "vol"
+        },
+        {
+            "nom": "Alice Martin",
+            "classe": "Affaires",
+            "date": "2025-04-02",
+            "type": "cargaison"
+        }
+    ],
+    "users": [
+        {
+            "username": "JeanD",
+            "email": "jean@example.com"
+        },
+        {
+            "username": "AliceM",
+            "email": "alice@example.com"
+        }
+    ]
+}
