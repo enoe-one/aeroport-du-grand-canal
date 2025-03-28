@@ -30,13 +30,12 @@
             <label for="slots">Nombre de slots:</label>
             <input type="number" id="slots" placeholder="Nombre de slots" min="1" required>
 
-                        <label for="reservation-class">Classe de réservation:</label>
+            <label for="reservation-class">Classe de réservation:</label>
             <select id="reservation-class" required>
                 <option value="Classe simple">Simple</option>
                 <option value="Classe rapide">rapide</option>
             </select>
 
-            
             <label for="date">Date:</label>
             <input type="date" id="date" required>
 
@@ -60,7 +59,7 @@
             "Classe rapide": 3,
         };
 
-        function makeReservation() {
+        async function makeReservation() {
             const nom = document.getElementById("name").value;
             const slots = parseInt(document.getElementById("slots").value);
             const date = document.getElementById("date").value;
@@ -78,7 +77,6 @@
                 return;
             }
 
-            // Ajout du statut "vol" pour l'admin
             const reservation = {
                 nom: nom,
                 classe: reservationClass,
@@ -87,40 +85,23 @@
                 nonVisible: nonVisible,
                 username: currentUser,
                 price: (slots * (prices[reservationClass] || 0)),
-                type: "cargaison", // Spécifier que c'est une réservation pour un vol
-                status: "effectuée"  // Marquer la réservation comme effectuée
+                type: "cargaison",
+                status: "effectuée"
             };
 
-            const reservations = JSON.parse(localStorage.getItem("reservations")) || [];
-            reservations.push(reservation);
-            localStorage.setItem("reservations", JSON.stringify(reservations));
+            // Envoi de la réservation vers le serveur pour l'ajouter dans le fichier JSON
+            const response = await fetch('/api/saveReservation', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(reservation)
+            });
 
-            document.getElementById("reservation-form").style.display = "none";
-            document.getElementById("reservation-info").style.display = "block";
-
-            updateAdminAndUserReservations(reservation);
-        }
-
-        function updateAdminAndUserReservations(reservation) {
-            const userReservations = JSON.parse(localStorage.getItem("userReservations")) || {};
-            const adminReservations = JSON.parse(localStorage.getItem("adminReservations")) || [];
-            const horairesReservations = JSON.parse(localStorage.getItem("horairesReservations")) || [];
-
-            if (!userReservations[reservation.username]) {
-                userReservations[reservation.username] = [];
+            if (response.ok) {
+                document.getElementById("reservation-form").style.display = "none";
+                document.getElementById("reservation-info").style.display = "block";
+            } else {
+                document.getElementById("error-message").innerText = "Une erreur est survenue lors de la réservation.";
             }
-            userReservations[reservation.username].push(reservation);
-
-            adminReservations.push(reservation);
-
-            // Si la réservation n'est pas "non visible", elle apparaît dans horairesReservations
-            if (!reservation.nonVisible) {
-                horairesReservations.push(reservation);
-            }
-
-            localStorage.setItem("userReservations", JSON.stringify(userReservations));
-            localStorage.setItem("adminReservations", JSON.stringify(adminReservations));
-            localStorage.setItem("horairesReservations", JSON.stringify(horairesReservations));
         }
 
         function logout() {
