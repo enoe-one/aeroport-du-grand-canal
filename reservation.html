@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Réservation cargaison - Aéroport du Grand Canal</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Réservation - Aéroport du Grand Canal</title>
+    <link rel="stylesheet" href="C:\Users\Emile GLINCHE\Desktop\site\aeropot\styles.css">
 </head>
 <body>
+
+    <!-- Bannière -->
     <div class="banner">
         <div class="banner-text">Aéroport du Grand Canal</div>
     </div>
@@ -20,110 +22,19 @@
     </nav>
 
     <div class="container">
-        <h2>Réserver des slots</h2>
-        <div id="auth-buttons" class="auth-buttons"></div>
+        <h2>Réserver un slot</h2>
 
-        <div id="reservation-form" style="display: none;">
-            <label for="name">Nom de la réservation:</label>
-            <input type="text" id="name" placeholder="Entrez votre nom" required>
+        <label for="name">Nom de la réservation :</label>
+        <input type="text" id="name" placeholder="Entrez votre nom" required>
 
-            <label for="slots">Nombre de slots:</label>
-            <input type="number" id="slots" placeholder="Nombre de slots" min="1" required>
+        <br><br>
 
-            <label for="reservation-class">Classe de réservation:</label>
-            <select id="reservation-class" required>
-                <option value="Classe simple">Simple</option>
-                <option value="Classe rapide">rapide</option>
-            </select>
-
-            <label for="date">Date:</label>
-            <input type="date" id="date" required>
-
-            <label for="non-visible">Cacher la réservation (10 diamants):</label>
-            <input type="checkbox" id="non-visible">
-
-            <button onclick="makeReservation()">Réserver</button>
-        </div>
-
-        <p id="error-message" class="error-message"></p>
-
-        <div id="reservation-info" style="display: none;">
-            <p>Réservation effectuée avec succès!</p>
-            <button onclick="window.location.href='mes-reservations.html'">Voir Mes Réservations</button>
-        </div>
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSddaRXyQ2Uq0daosy5FpkH6dHYFRm6KEye8mO_Fp8Qwm1QCIA/viewform?usp=header" target="_blank">
+            <button style="background-color: #007BFF; color: white; padding: 10px 20px; border: none; border-radius: 5px; font-size: 16px;">
+                Réserver
+            </button>
+        </a>
     </div>
 
-    <script>
-        const prices = {
-            "Classe Simple": 1,
-            "Classe rapide": 3,
-        };
-
-        async function makeReservation() {
-            const nom = document.getElementById("name").value;
-            const slots = parseInt(document.getElementById("slots").value);
-            const date = document.getElementById("date").value;
-            const nonVisible = document.getElementById("non-visible").checked;
-            const reservationClass = document.getElementById("reservation-class").value;
-
-            if (!nom || !slots || !date) {
-                document.getElementById("error-message").innerText = "Tous les champs sont obligatoires.";
-                return;
-            }
-
-            const currentUser = localStorage.getItem("currentUser");
-            if (!currentUser) {
-                document.getElementById("error-message").innerText = "Vous devez être connecté pour réserver.";
-                return;
-            }
-
-            const reservation = {
-                nom: nom,
-                classe: reservationClass,
-                slots: slots,
-                date: date,
-                nonVisible: nonVisible,
-                username: currentUser,
-                price: (slots * (prices[reservationClass] || 0)),
-                type: "cargaison",
-                status: "effectuée"
-            };
-
-            // Envoi de la réservation vers le serveur pour l'ajouter dans le fichier JSON
-            const response = await fetch('/api/saveReservation', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(reservation)
-            });
-
-            if (response.ok) {
-                document.getElementById("reservation-form").style.display = "none";
-                document.getElementById("reservation-info").style.display = "block";
-            } else {
-                document.getElementById("error-message").innerText = "Une erreur est survenue lors de la réservation.";
-            }
-        }
-
-        function logout() {
-            localStorage.removeItem("currentUser");
-            alert("Déconnexion réussie");
-            window.location.reload();
-        }
-
-        function checkAuthButtons() {
-            let currentUser = localStorage.getItem("currentUser");
-            let authButtons = document.getElementById("auth-buttons");
-            if (currentUser) {
-                authButtons.innerHTML = '<button onclick="logout()">Déconnexion</button>';
-                document.getElementById("reservation-form").style.display = "block";
-            } else {
-                authButtons.innerHTML = '<button onclick="window.location.href=\'login.html\'">Connexion</button>' +
-                    '<button onclick="window.location.href=\'register.html\'">S\'inscrire</button>';
-                document.getElementById("error-message").innerText = "Vous devez être connecté pour réserver.";
-            }
-        }
-
-        window.onload = checkAuthButtons;
-    </script>
 </body>
 </html>
