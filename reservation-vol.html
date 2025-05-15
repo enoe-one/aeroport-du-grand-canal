@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Réservation - Aéroport du Grand Canal</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="C:\Users\Emile GLINCHE\Desktop\site\aeropot\styles.css">
 </head>
 <body>
+
+    <!-- Bannière -->
     <div class="banner">
         <div class="banner-text">Aéroport du Grand Canal</div>
     </div>
@@ -20,138 +22,19 @@
     </nav>
 
     <div class="container">
-        <h2>Réserver des slots</h2>
-        <div id="auth-buttons" class="auth-buttons"></div>
+        <h2>Réserver un vol</h2>
 
-        <div id="reservation-form" style="display: none;">
-            <label for="name">Nom de la réservation:</label>
-            <input type="text" id="name" placeholder="Entrez votre nom" required>
+        <label for="name">Nom de la réservation :</label>
+        <input type="text" id="name" placeholder="Entrez votre nom" required>
 
-            <label for="slots">Nombre de slots:</label>
-            <input type="number" id="slots" placeholder="Nombre de slots" min="1" required>
+        <br><br>
 
-            <label for="reservation-class">Classe de réservation:</label>
-            <select id="reservation-class" required>
-                <option value="Classe Simple">Simple</option>
-                <option value="Classe Moyen">Moyen</option>
-                <option value="Classe Business">Affaires</option>
-                <option value="Classe Entreprise">Entreprise (plusieurs personnes)</option>
-                <option value="Classe Royal">Royal</option>
-                <option value="Abonnement Classe Moyen">Abonnement (contacter l'admin)</option>
-                <option value="Jet Privé">Jet privé / ans</option>
-            </select>
-
-            <label for="date">Date:</label>
-            <input type="date" id="date" required>
-
-            <label for="non-visible">Cacher la réservation (10 diamants):</label>
-<input type="checkbox" id="non-visible">
-
-      <button type="button" onclick="makeReservation()">Réserver</button>
-        </div>
-
-        <p id="error-message" class="error-message"></p>
-
-        <div id="reservation-info" style="display: none;">
-            <p>Réservation effectuée avec succès!</p>
-            <button onclick="window.location.href='mes-reservations.html'">Voir Mes Réservations</button>
-        </div>
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSek6t-kMpymMXk-vGbXujPp1XgqRKpU0p2lJv7DjAobGND7xg/viewform?usp=header" target="_blank">
+            <button style="background-color: #007BFF; color: white; padding: 10px 20px; border: none; border-radius: 5px; font-size: 16px;">
+                Réserver
+            </button>
+        </a>
     </div>
 
-    <script>
-        const prices = {
-            "Classe Simple": 2,
-            "Classe Moyen": 5,
-            "Classe Business": 10,
-            "Classe Entreprise": 14,
-            "Classe Royal": 56,
-            "Abonnement Classe Moyen": 120,
-            "Jet Privé": 100,
-        };
-
-        function makeReservation() {
-            const nom = document.getElementById("name").value;
-            const slots = parseInt(document.getElementById("slots").value);
-            const date = document.getElementById("date").value;
-            const nonVisible = document.getElementById("non-visible").checked;
-            const reservationClass = document.getElementById("reservation-class").value;
-
-            if (!nom || !slots || !date) {
-                document.getElementById("error-message").innerText = "Tous les champs sont obligatoires.";
-                return;
-            }
-
-            const currentUser = localStorage.getItem("currentUser");
-            if (!currentUser) {
-                document.getElementById("error-message").innerText = "Vous devez être connecté pour réserver.";
-                return;
-            }
-
-            // Ajout du statut "vol" pour l'admin
-            const reservation = {
-                nom: nom,
-                classe: reservationClass,
-                slots: slots,
-                date: date,
-                nonVisible: nonVisible,
-                username: currentUser,
-                price: (slots * (prices[reservationClass] || 0)),
-                type: "vol", // Spécifier que c'est une réservation pour un vol
-                status: "effectuée"  // Marquer la réservation comme effectuée
-            };
-
-            const reservations = JSON.parse(localStorage.getItem("reservations")) || [];
-            reservations.push(reservation);
-            localStorage.setItem("reservations", JSON.stringify(reservations));
-
-            document.getElementById("reservation-form").style.display = "none";
-            document.getElementById("reservation-info").style.display = "block";
-
-            updateAdminAndUserReservations(reservation);
-        }
-
-        function updateAdminAndUserReservations(reservation) {
-            const userReservations = JSON.parse(localStorage.getItem("userReservations")) || {};
-            const adminReservations = JSON.parse(localStorage.getItem("adminReservations")) || [];
-            const horairesReservations = JSON.parse(localStorage.getItem("horairesReservations")) || [];
-
-            if (!userReservations[reservation.username]) {
-                userReservations[reservation.username] = [];
-            }
-            userReservations[reservation.username].push(reservation);
-
-            adminReservations.push(reservation);
-
-            // Si la réservation n'est pas "non visible", elle apparaît dans horairesReservations
-            if (!reservation.nonVisible) {
-                horairesReservations.push(reservation);
-            }
-
-            localStorage.setItem("userReservations", JSON.stringify(userReservations));
-            localStorage.setItem("adminReservations", JSON.stringify(adminReservations));
-            localStorage.setItem("horairesReservations", JSON.stringify(horairesReservations));
-        }
-
-        function logout() {
-            localStorage.removeItem("currentUser");
-            alert("Déconnexion réussie");
-            window.location.reload();
-        }
-
-        function checkAuthButtons() {
-            let currentUser = localStorage.getItem("currentUser");
-            let authButtons = document.getElementById("auth-buttons");
-            if (currentUser) {
-                authButtons.innerHTML = '<button onclick="logout()">Déconnexion</button>';
-                document.getElementById("reservation-form").style.display = "block";
-            } else {
-                authButtons.innerHTML = '<button onclick="window.location.href=\'login.html\'">Connexion</button>' +
-                    '<button onclick="window.location.href=\'register.html\'">S\'inscrire</button>';
-                document.getElementById("error-message").innerText = "Vous devez être connecté pour réserver.";
-            }
-        }
-
-        window.onload = checkAuthButtons;
-    </script>
 </body>
 </html>
